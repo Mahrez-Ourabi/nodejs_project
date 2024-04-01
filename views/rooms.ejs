@@ -1,0 +1,41 @@
+<!-- rooms.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Rooms</title>
+</head>
+<body>
+    <h1>All Rooms</h1>
+    <ul>
+        <% rooms.forEach(room => { %>
+            <li>
+                <h2><%= room.name %></h2>
+                <button class="reserve-btn" data-room-id="<%= room.id %>">Reserve</button>
+            </li>
+        <% }); %>
+    </ul>
+    
+    <!-- Reservation Calendar Modal -->
+    <div id="calendarModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Available Dates</h2>
+            <div id="calendar"></div>
+            <button id="reserve">Reserve</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.reserve-btn').on('click', function() {
+                const roomId = $(this).data('room-id');
+                // Fetch available dates for reservation and open the calendar modal
+                // Example: $.post('/api/available-dates', { roomId }, function(data) { });
+            });
+        });
+    </script>
+</body>
+</html>

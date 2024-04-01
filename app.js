@@ -1,25 +1,49 @@
 const express = require('express');
-const dotenv  = require('dotenv');
-const app = express();
+const dotenv = require('dotenv');
+const cors = require('cors'); // Import cors middleware
+const morgan = require('morgan'); // Import morgan middleware for logging
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
 const meetingRoomRoutes = require('./routes/meetingRoutes');
 const reservationRoutes = require('./routes/reservationRoutes');
+const { authenticateUser } = require("./middleware/middleware");
 
 dotenv.config();
+
+const app = express();
+
 // Middleware
+// app.use(cors()); // Enable CORS for all routes
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-const PORT = process.env.PORT || 3000;
-const URI = process.env.URI;
+// app.use(morgan("tiny"));
+// app.use(bodyParser.json());
 
-
-
+// Set up EJS as the view engine
+app.set('view engine', 'ejs');
+app.set('views', __dirname + '/views');
 
 // Routes
 app.use('/auth', authRoutes);
 app.use('/meeting-room', meetingRoomRoutes);
 app.use('/reservation', reservationRoutes);
+
+// Render the registration page
+app.get('/register', (req, res) => {
+  res.render('register');
+});
+
+app.get('/login', (req, res) => {
+  res.render('login');
+}
+);
+
+app.get('/rooms', (req, res) => {
+  
+      res.render('rooms');
+   
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -28,8 +52,10 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server
-mongoose
-  .connect(URI)
+const PORT = process.env.PORT || 3000;
+const URI = process.env.URI;
+
+mongoose.connect(URI)
   .then(() => {
     console.log("Connected to MongoDB");
     app.listen(PORT, () => {
@@ -39,4 +65,3 @@ mongoose
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err.message);
   });
-

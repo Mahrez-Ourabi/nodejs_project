@@ -1,33 +1,47 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const nodemailer = require('nodemailer');
+const { sendVerificationEmail } = require('../middleware/emailService');
 
+// Function to generate a random 6-digit verification code
+const generateVerificationCode = () => {
+  return Math.floor(100000 + Math.random() * 900000);
+};    
 
 // Register a new user
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    const isadmin = email.endsWith('-admin@gmail.com');
+    let { name, email, password } = req.body;
+    
+    email = email.toLowerCase();
+    
+    // Check if the user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ error: 'User already exists' });
+    }
+
+    // Generate verification code
+    const verificationCode = generateVerificationCode();
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
-    // Create a new user
+    const saltRounds = 10; // Number of salt rounds for bcrypt
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const isadmin = email.endsWith('-admin@gmail.com');
+    // Send verification email and create user if successful
+    if (!isadmin)
+      {await sendVerificationEmail(email, verificationCode);}
+
+    
+
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
       isAdmin: isadmin,
-
+      verificationCode,
+      isVerified :isadmin
     });
-
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    
-    // Construct verification link
-    const verificationLink = `${req.protocol}://${req.get('host')}/verify-email/${token}`;
-
-    // Send verification email
-    await sendVerificationEmail( email , verificationLink);
 
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
@@ -36,54 +50,54 @@ exports.register = async (req, res) => {
   }
 };
 
-
-// Function to send verification email
-const sendVerificationEmail = async (email, verificationLink) => {
+// Verify email code
+exports.verifyEmailCode = async (req, res) => {
   try {
-    // Create reusable transporter object using the default SMTP transport
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USERNAME, // Your Gmail email address
-        pass: process.env.EMAIL_PASSWORD // Your Gmail password or app password
-      }
-    });
+    let { email, verificationCode } = req.body;
 
-    // Setup email data
-    const mailOptions = {
-      from: process.env.EMAIL_USERNAME,
-      to: email,
-      subject: 'Verify Your Email',
-      text: `Click on the following link to verify your email: ${verificationLink}`
-    };
+    email = email.toLowerCase();
 
-    // Send email
-    await transporter.sendMail(mailOptions);
-    // render to vue login page
-    
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (user.verificationCode !== verificationCode) {
+      return res.status(400).json({ error: 'Invalid verification code' });
+    }
+
+    user.isVerified = true;
+    user.verificationCode = 0;
+    await user.save();
+    res.status(200).json({ message: 'Email verified successfully' });
   } catch (error) {
-    console.error('Error sending verification email:', error);
-    throw new Error('Failed to send verification email');
+    console.error(error);
+    res.status(500).json({ error: 'Failed to verify email' });
   }
 };
-
-
 
 // Login user
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    // Find user by email
+    let { email, password } = req.body;
+
+      email = email.toLowerCase();
     const user = await User.findOne({ email });
+
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
-    // Compare passwords
+
+    if (!user.isVerified) {
+      return res.status(401).json({ error: 'User is not verified' });
+    }
+
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
-    // Generate JWT token
+
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.status(200).json({ token });
   } catch (error) {
@@ -95,7 +109,6 @@ exports.login = async (req, res) => {
 // Logout user
 exports.logout = (req, res) => {
     try {
-        // Clear the JWT token from the client-side
         res.clearCookie('token');
         res.status(200).json({ message: 'User logged out successfully' });
     } catch (error) {

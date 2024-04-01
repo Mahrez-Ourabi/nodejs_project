@@ -8,6 +8,8 @@ const router = express.Router();
 // GET all reservations
 router.get('/', ReservastionController.getAllReservations);
 
+router.get('/reservations-user', authenticateUser, ReservastionController.getUserReservations);
+
 // GET a specific reservation
 router.get('/:id', ReservastionController.getReservationById);
 

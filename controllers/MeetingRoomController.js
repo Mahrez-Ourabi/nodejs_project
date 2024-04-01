@@ -12,9 +12,18 @@ exports.getAllMeetingRooms = async (req, res) => {
 };
 
 // Create a new meeting room
+
 exports.createMeetingRoom = async (req, res) => {
   try {
     const { name, capacity , equipment } = req.body;
+    //check if room already exists
+    const existingRoom = await MeetingRoom.findOne({name});
+    
+    if (existingRoom) {
+      return res.status(409).json({ error: 'Room already exists' });
+    }
+
+    
     const meetingRoom = new MeetingRoom({ name, capacity, equipment });
     await meetingRoom.save();
     res.status(201).json(meetingRoom);

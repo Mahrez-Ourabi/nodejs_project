@@ -13,7 +13,7 @@ router.post('/login', authController.login);
 router.get('/logout', authController.logout);
 
 // Route for email verification
-router.get('/verify-email/:token', authController.verifyEmail);
+router.get('/verify-email', authController.verifyEmailCode);
 
 
 

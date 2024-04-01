@@ -1,6 +1,8 @@
 const Reservation = require('../models/reservation');
 const { sendConfirmationEmail } = require('../middleware/emailService');
 const deleteUnconfirmedReservation = require('../middleware/deleteUnconfirmedReservation');
+const { generateToken } = require('../middleware/tokenUtils');
+const User = require('../models/user');
 
 
 // Function to create a reservation
@@ -35,28 +37,40 @@ exports.createReservation = async (req, res) => {
       }
     }
 
-    const reservation = await Reservation.create({
-      user: userId,
-      meetingRoom: meetingRoomId,
-      startTime,
-      endTime,
-      confirmationToken: generateToken() // Generate confirmation token
+    const confirmationToken = generateToken(); // Generate confirmation token
 
-    });
+    try {
+      // Get user email
+      const user = await User.findById(userId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+      const email = user.email;
 
-    // Send confirmation email
-    await sendConfirmationEmail(userId, reservation._id, reservation.confirmationToken);
+      // Create reservation
+      const reservation = await Reservation.create({
+        user: userId,
+        meetingRoom: meetingRoomId,
+        startTime,
+        endTime,
+        confirmationToken: confirmationToken // Generate confirmation token
+      });
 
+      // Send confirmation email
+      await sendConfirmationEmail(email, reservation._id, confirmationToken);
 
-    // If the reservation is not confirmed, schedule deletion after 10 minutes
-    if (!reservation.confirmed) {
+      // If the reservation is not confirmed, schedule deletion after 10 minutes
+      if (!reservation.confirmed) {
         setTimeout(() => {
-            deleteUnconfirmedReservation(reservation._id);
+          deleteUnconfirmedReservation(reservation._id);
         }, 10 * 60 * 1000); // 10 minutes in milliseconds
+      }
+
+      res.status(201).json(reservation);
+    } catch (error) {
+      console.error('Error creating reservation:', error);
+      res.status(500).json({ error: 'Failed to create reservation' });
     }
-
-
-    res.status(201).json(reservation);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to create reservation' });
@@ -81,10 +95,13 @@ exports.confirmReservation = async (req, res) => {
         if (reservation.confirmationToken === token) {
             reservation.confirmed = true;
             await reservation.save();
-            return res.redirect('/confirmation-success'); // Redirect to confirmation success page
+            console.log('Reservation confirmed:', reservation);
+            // return res.redirect('/confirmation-success'); // Redirect to confirmation success page
         } else {
             return res.status(400).json({ error: 'Invalid token' });
         }
+        //redirect to route showing all rooms with a message that reservation was successful
+        res.send("Reservation confirmed successfully! You will be redirected soon.");
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Failed to confirm reservation' });
@@ -99,7 +116,7 @@ exports.confirmReservation = async (req, res) => {
 // Function to get reservations for a specific user
 exports.getUserReservations = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.userId;
     const reservations = await Reservation.find({ user: userId }).populate('meetingRoom');
     res.status(200).json(reservations);
   } catch (error) {
