@@ -14,11 +14,12 @@ dotenv.config();
 const app = express();
 
 // Middleware
-// app.use(cors()); // Enable CORS for all routes
+app.use(cors()); // Enable CORS for all routes
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(morgan("tiny"));
-// app.use(bodyParser.json());
+app.use(morgan("tiny"));
+app.use(bodyParser.json());
+app.use(express.static('public'));
 
 // Set up EJS as the view engine
 app.set('view engine', 'ejs');

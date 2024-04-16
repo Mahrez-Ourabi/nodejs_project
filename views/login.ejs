@@ -1,20 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login Page</title>
-    <style>
-        /* Add your custom CSS styles here */
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Assuming you have a separate CSS file -->
 </head>
 <body>
-    <h1>Login</h1>
-    <form action="/auth/login" method="POST">
-        <label for="email">Email:</label>
-        <input type="text" id="email" name="email" required><br><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-        <input type="submit" value="Login">
-    </form>
-    
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="/login">Sign In</a></li>
+            <li><a href="/register">Sign Up</a></li>
+            <li><a href="#">Show</a></li>
+        </ul>
+    </nav>
+
+    <div class="login-container">
+        <!-- Your login form HTML code goes here -->
+    </div>
+
+    <script src="script.js"></script> <!-- Assuming you have a separate JavaScript file -->
 </body>
 </html>

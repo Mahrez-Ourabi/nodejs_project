@@ -1,21 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>User Registration</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Assuming you have a separate CSS file -->
 </head>
 <body>
-    <h1>User Registration</h1>
-    <form action="/auth/register" method="POST">
-        <label for="name">name:</label>
-        <input type="text" id="name" name="name" required><br><br>
-        
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
-        
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-        
-        <button type="submit">Register</button>
-    </form>
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="/login">Sign In</a></li>
+            <li><a href="/register">Sign Up</a></li>
+            <li><a href="#">Show</a></li>
+        </ul>
+    </nav>
+
+    <div class="register-container">
+        <!-- Your registration form HTML code goes here -->
+    </div>
+
+    <script src="script.js"></script> <!-- Assuming you have a separate JavaScript file -->
 </body>
 </html>
