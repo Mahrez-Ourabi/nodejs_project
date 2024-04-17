@@ -1,20 +1,33 @@
-const express = require('express');
-const authController = require('../controllers/AuthController'); // Correct path to the AuthController file
+const express = require("express")
+const authController = require("../controllers/AuthController") // Correct path to the AuthController file
 
-const router = express.Router();
+const router = express.Router()
 
 // Route for user registration
-router.post('/register', authController.register);
+router.post("/register", authController.register)
 
 // Route for user login
-router.post('/login', authController.login);
+router.post("/login", authController.login)
 
 // Route for user logout
-router.get('/logout', authController.logout);
+router.post("/logout", authController.logout)
 
 // Route for email verification
-router.get('/verify-email', authController.verifyEmailCode);
+router.post("/verify-email", authController.verifyEmailCode)
 
+// Render the registration page
+router.get("/register", (req, res) => {
+  res.render("register")
+})
 
+// Render the login page
+router.get("/login", (req, res) => {
+  res.render("login")
+})
 
-module.exports = router;
+// Render the email verification page
+router.get("/verify-email", (req, res) => {
+  res.render("verify-email")
+})
+
+module.exports = router

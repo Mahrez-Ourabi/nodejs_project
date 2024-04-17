@@ -1,0 +1,23 @@
+<!-- show.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reservation Details</title>
+  </head>
+  <body>
+    <h1>Reservation Details</h1>
+    <p><strong>ID:</strong> <%= reservation._id %></p>
+    <p><strong>Meeting Room ID:</strong> <%= reservation.meetingRoomId %></p>
+    <p><strong>Start Time:</strong> <%= reservation.startTime %></p>
+    <p><strong>End Time:</strong> <%= reservation.endTime %></p>
+    <a href="/reservations/<%= reservation._id %>/edit">Edit</a>
+    <form
+      action="/reservations/<%= reservation._id %>?_method=DELETE"
+      method="POST"
+    >
+      <button type="submit">Delete</button>
+    </form>
+  </body>
+</html>

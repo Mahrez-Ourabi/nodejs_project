@@ -1,38 +1,37 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const User = require('../models/user');
-const { sendVerificationEmail } = require('../middleware/emailService');
+const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
+const User = require("../models/user")
+const { sendVerificationEmail } = require("../middleware/emailService")
 
 // Function to generate a random 6-digit verification code
 const generateVerificationCode = () => {
-  return Math.floor(100000 + Math.random() * 900000);
-};    
+  return Math.floor(100000 + Math.random() * 900000)
+}
 
 // Register a new user
 exports.register = async (req, res) => {
   try {
-    let { name, email, password } = req.body;
-    
-    email = email.toLowerCase();
-    
+    let { name, email, password } = req.body
+
+    email = email.toLowerCase()
+
     // Check if the user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email })
     if (existingUser) {
-      return res.status(409).json({ error: 'User already exists' });
+      return res.render("/auth/register", { error: "User already exists" })
     }
 
     // Generate verification code
-    const verificationCode = generateVerificationCode();
+    const verificationCode = generateVerificationCode()
 
     // Hash the password
-    const saltRounds = 10; // Number of salt rounds for bcrypt
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const isadmin = email.endsWith('-admin@gmail.com');
+    const saltRounds = 10 // Number of salt rounds for bcrypt
+    const hashedPassword = await bcrypt.hash(password, saltRounds)
+    const isadmin = email.endsWith("-admin@gmail.com")
     // Send verification email and create user if successful
-    if (!isadmin)
-      {await sendVerificationEmail(email, verificationCode);}
-
-    
+    if (!isadmin) {
+      await sendVerificationEmail(email, verificationCode)
+    }
 
     const user = await User.create({
       name,
@@ -40,79 +39,87 @@ exports.register = async (req, res) => {
       password: hashedPassword,
       isAdmin: isadmin,
       verificationCode,
-      isVerified :isadmin
-    });
+      isVerified: isadmin,
+    })
 
-    res.status(201).json({ message: 'User registered successfully' });
+    res.redirect("/auth/verify-email")
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to register user' });
+    console.error(error)
+    res.render("/auth/register", { error: "Failed to register user" })
   }
-};
+}
 
 // Verify email code
 exports.verifyEmailCode = async (req, res) => {
   try {
-    let { email, verificationCode } = req.body;
+    let { email, verificationCode } = req.body
 
-    email = email.toLowerCase();
+    email = email.toLowerCase()
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email })
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.render("/auth/verify-email", { error: "User not found" })
     }
 
     if (user.verificationCode !== verificationCode) {
-      return res.status(400).json({ error: 'Invalid verification code' });
+      return res.render("/auth/verify-email", {
+        error: "Invalid verification code",
+      })
     }
 
-    user.isVerified = true;
-    user.verificationCode = 0;
-    await user.save();
-    res.status(200).json({ message: 'Email verified successfully' });
+    user.isVerified = true
+    user.verificationCode = 0
+    await user.save()
+
+    // Redirect to login page after successful email verification
+    res.redirect("/auth/login")
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to verify email' });
+    console.error(error)
+    res.render("/auth/verify-email", { error: "Failed to verify email" })
   }
-};
+}
 
 // Login user
 exports.login = async (req, res) => {
   try {
-    let { email, password } = req.body;
+    let { email, password } = req.body
 
-      email = email.toLowerCase();
-    const user = await User.findOne({ email });
+    email = email.toLowerCase()
+    const user = await User.findOne({ email })
 
     if (!user) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.render("/auth/login", { error: "Invalid email or password" })
     }
 
     if (!user.isVerified) {
-      return res.status(401).json({ error: 'User is not verified' });
+      return res.render("/auth/login", { error: "User is not verified" })
     }
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.compare(password, user.password)
     if (!passwordMatch) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.render("/auth/login", { error: "Invalid email or password" })
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.status(200).json({ token });
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    })
+
+    // Redirect to home page after successful login
+    res.redirect("/home")
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to login' });
+    console.error(error)
+    res.render("/auth/login", { error: "Failed to login" })
   }
-};
+}
 
 // Logout user
 exports.logout = (req, res) => {
-    try {
-        res.clearCookie('token');
-        res.status(200).json({ message: 'User logged out successfully' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to logout' });
-    }
-};
+  try {
+    res.clearCookie("token")
+    res.redirect("/home") // Redirect to home page after logout
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Failed to logout" })
+  }
+}

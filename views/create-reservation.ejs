@@ -1,0 +1,31 @@
+<!-- create.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Reservation</title>
+  </head>
+  <body>
+    <h1>Create Reservation</h1>
+    <form action="/reservations" method="POST">
+      <label for="meetingRoomId">Meeting Room ID:</label>
+      <input
+        type="text"
+        id="meetingRoomId"
+        name="meetingRoomId"
+        required
+      /><br />
+      <label for="startTime">Start Time:</label>
+      <input
+        type="datetime-local"
+        id="startTime"
+        name="startTime"
+        required
+      /><br />
+      <label for="endTime">End Time:</label>
+      <input type="datetime-local" id="endTime" name="endTime" required /><br />
+      <button type="submit">Create Reservation</button>
+    </form>
+  </body>
+</html>
