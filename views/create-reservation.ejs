@@ -27,5 +27,8 @@
       <input type="datetime-local" id="endTime" name="endTime" required /><br />
       <button type="submit">Create Reservation</button>
     </form>
+    <% if (error) { %>
+    <p>Error: <%= error %></p>
+    <% } %>
   </body>
 </html>

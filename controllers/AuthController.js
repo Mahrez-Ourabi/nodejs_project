@@ -18,7 +18,7 @@ exports.register = async (req, res) => {
     // Check if the user already exists
     const existingUser = await User.findOne({ email })
     if (existingUser) {
-      return res.render("/auth/register", { error: "User already exists" })
+      return res.render("register", { error: "User already exists" })
     }
 
     // Generate verification code
@@ -33,19 +33,16 @@ exports.register = async (req, res) => {
       await sendVerificationEmail(email, verificationCode)
     }
 
-    const user = await User.create({
+    await User.create({
       name,
       email,
       password: hashedPassword,
       isAdmin: isadmin,
       verificationCode,
       isVerified: isadmin,
-    })
-
-    res.redirect("/auth/verify-email")
+    }).then(() => res.redirect("/auth/verify-email"))
   } catch (error) {
-    console.error(error)
-    res.render("/auth/register", { error: "Failed to register user" })
+    res.render("register", { error: "Failed to register user" })
   }
 }
 
@@ -53,30 +50,29 @@ exports.register = async (req, res) => {
 exports.verifyEmailCode = async (req, res) => {
   try {
     let { email, verificationCode } = req.body
+    console.log(email, verificationCode)
 
     email = email.toLowerCase()
 
     const user = await User.findOne({ email })
 
     if (!user) {
-      return res.render("/auth/verify-email", { error: "User not found" })
-    }
-
-    if (user.verificationCode !== verificationCode) {
-      return res.render("/auth/verify-email", {
+      res.render("verify-email", { error: "User not found" })
+    } else if (user.verificationCode != verificationCode) {
+      res.render("verify-email", {
         error: "Invalid verification code",
       })
+    } else {
+      user.isVerified = true
+      user.verificationCode = 0
+      await user.save()
+      res.redirect("/auth/login")
     }
 
-    user.isVerified = true
-    user.verificationCode = 0
-    await user.save()
-
     // Redirect to login page after successful email verification
-    res.redirect("/auth/login")
   } catch (error) {
     console.error(error)
-    res.render("/auth/verify-email", { error: "Failed to verify email" })
+    res.render("verify-email", { error: "Failed to verify email" })
   }
 }
 
@@ -84,32 +80,25 @@ exports.verifyEmailCode = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     let { email, password } = req.body
-
     email = email.toLowerCase()
     const user = await User.findOne({ email })
 
     if (!user) {
-      return res.render("/auth/login", { error: "Invalid email or password" })
+      res.render("login", { error: "User not found" })
+    } else if (!user.isVerified) {
+      res.render("login", { error: "User is not verified" })
+    } else {
+      if (!(await bcrypt.compare(password, user.password))) {
+        res.render("login", { error: "wrong password!" })
+      } else {
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+          expiresIn: "24h",
+        })
+        res.render("login", { token: token })
+      }
     }
-
-    if (!user.isVerified) {
-      return res.render("/auth/login", { error: "User is not verified" })
-    }
-
-    const passwordMatch = await bcrypt.compare(password, user.password)
-    if (!passwordMatch) {
-      return res.render("/auth/login", { error: "Invalid email or password" })
-    }
-
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    })
-
-    // Redirect to home page after successful login
-    res.redirect("/home")
   } catch (error) {
-    console.error(error)
-    res.render("/auth/login", { error: "Failed to login" })
+    res.render("login", { error: error })
   }
 }
 

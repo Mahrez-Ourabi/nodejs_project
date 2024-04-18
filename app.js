@@ -25,6 +25,11 @@ app.use(express.static("public"))
 app.set("view engine", "ejs")
 app.set("views", __dirname + "/views")
 
+app.get("/", (req, res) => {
+  // Render the home page view
+  res.render("home")
+})
+
 // Routes
 app.use("/auth", authRoutes)
 app.use("/meeting-room", meetingRoomRoutes)
