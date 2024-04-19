@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Meeting Room</title>
+  </head>
+  <body>
+    <h1>Edit Meeting Room</h1>
+    <% if (typeof error !== 'undefined') { %>
+    <p>Error: <%= error %></p>
+    <% } else { %> <% if (meetingRoom) { %>
+    <form action="/meeting-room/<%= meetingRoom._id %>" method="POST">
+      <label for="name">Name:</label><br />
+      <input
+        type="text"
+        id="name"
+        name="name"
+        value="<%= meetingRoom.name %>"
+      /><br />
+      <label for="capacity">Capacity:</label><br />
+      <input
+        type="text"
+        id="capacity"
+        name="capacity"
+        value="<%= meetingRoom.capacity %>"
+      /><br />
+      <label for="equipment">Equipment:</label><br />
+      <input
+        type="text"
+        id="equipment"
+        name="equipment"
+        value="<%= meetingRoom.equipment %>"
+      /><br />
+      <button type="submit">Update</button>
+    </form>
+    <% } else { %>
+    <p>Error: Meeting room not found.</p>
+    <% } %> <% } %>
+  </body>
+</html>
