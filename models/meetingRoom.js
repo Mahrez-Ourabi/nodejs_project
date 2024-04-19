@@ -1,17 +1,17 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose")
 
 const meetingRoomSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   capacity: {
     type: Number,
-    required: true
+    required: true,
   },
-  equipment: [String]
-});
+  equipment: [String],
+})
 
-const MeetingRoom = mongoose.model('MeetingRoom', meetingRoomSchema);
+const MeetingRoom = mongoose.model("MeetingRoom", meetingRoomSchema)
 
-module.exports = MeetingRoom;
+module.exports = MeetingRoom
