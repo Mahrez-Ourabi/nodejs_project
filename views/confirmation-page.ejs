@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reservation Confirmation</title>
+  </head>
+  <body>
+    <h1>Reservation Confirmation</h1>
+    <% if (typeof error !== 'undefined') { %>
+    <p>Error: <%= error %></p>
+    <% } else if (typeof message !== 'undefined') { %>
+    <p><%= message %></p>
+    <% } else { %>
+    <p>Your reservation has been confirmed successfully!</p>
+    <p>Reservation ID: <%= reservation._id %></p>
+    <p>Meeting Room ID: <%= reservation.meetingRoomId %></p>
+    <p>Start Time: <%= reservation.startTime %></p>
+    <p>End Time: <%= reservation.endTime %></p>
+    <% } %>
+  </body>
+</html>

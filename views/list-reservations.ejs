@@ -7,6 +7,9 @@
   </head>
   <body>
     <h1>All Reservations</h1>
+    <% if (typeof error !== 'undefined') { %>
+    <p><%= error %></p>
+    <% } else { %>
     <ul>
       <% reservations.forEach(reservation => { %>
       <li>
@@ -16,5 +19,6 @@
       </li>
       <% }) %>
     </ul>
+    <% } %>
   </body>
 </html>

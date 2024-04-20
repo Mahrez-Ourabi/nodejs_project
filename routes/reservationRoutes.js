@@ -8,7 +8,7 @@ const router = express.Router()
 router.get("/", ReservastionController.getAllReservations)
 
 router.get(
-  "/reservations-user",
+  "/user/:id",
   authenticateUser,
   ReservastionController.getUserReservations
 )

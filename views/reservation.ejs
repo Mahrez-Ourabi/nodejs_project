@@ -1,4 +1,3 @@
-<!-- show.ejs -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -8,6 +7,9 @@
   </head>
   <body>
     <h1>Reservation Details</h1>
+    <% if (typeof error !== 'undefined') { %>
+    <p><%= error %></p>
+    <% } else { %>
     <p><strong>ID:</strong> <%= reservation._id %></p>
     <p><strong>Meeting Room ID:</strong> <%= reservation.meetingRoomId %></p>
     <p><strong>Start Time:</strong> <%= reservation.startTime %></p>
@@ -19,5 +21,6 @@
     >
       <button type="submit">Delete</button>
     </form>
+    <% } %>
   </body>
 </html>

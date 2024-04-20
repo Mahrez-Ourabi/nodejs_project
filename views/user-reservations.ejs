@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= user.name %> Reservations</title>
+  </head>
+  <body>
+    <h1><%= user.name %> Reservations</h1>
+    <% if (reservations.length > 0) { %>
+    <ul>
+      <% reservations.forEach(reservation => { %>
+      <li>
+        <p><strong>ID:</strong> <%= reservation._id %></p>
+        <p><strong>User Name:</strong> <%= user.name %></p>
+        <p>
+          <strong>Meeting Room ID:</strong> <%= reservation.meetingRoomId %>
+        </p>
+        <p><strong>Start Time:</strong> <%= reservation.startTime %></p>
+        <p><strong>End Time:</strong> <%= reservation.endTime %></p>
+      </li>
+      <% }) %>
+    </ul>
+    <% } else { %>
+    <p>No reservations found.</p>
+    <% } %>
+  </body>
+</html>
