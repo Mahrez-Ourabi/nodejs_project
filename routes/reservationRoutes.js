@@ -30,4 +30,13 @@ router.get(
   ReservastionController.confirmReservation
 )
 
+router.get(
+  "/cancel-reservation/:reservationId",
+  ReservastionController.cancelReservation
+)
+
+router.get("/room/:id", (req, res) => {
+  res.render("create-reservation", { meetingRoomId: req.params.id })
+})
+
 module.exports = router

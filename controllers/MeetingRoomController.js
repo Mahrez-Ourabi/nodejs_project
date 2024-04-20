@@ -4,10 +4,10 @@ const MeetingRoom = require("../models/meetingRoom")
 exports.getAllMeetingRooms = async (req, res) => {
   try {
     const meetingRooms = await MeetingRoom.find()
-    res.render("all-rooms", { meetingRooms: meetingRooms })
+    res.render("rooms", { meetingRooms: meetingRooms })
   } catch (error) {
     console.error(error)
-    res.render("all-rooms", { error: "Failed to fetch meeting rooms" })
+    res.render("rooms", { error: "Failed to fetch meeting rooms" })
   }
 }
 

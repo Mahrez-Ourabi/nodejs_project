@@ -30,12 +30,11 @@ exports.createReservation = async (req, res) => {
         // Notify the user that the room is reserved but not confirmed yet
         return res.render("create-room", {
           error:
-            "Conflicting reservation: Meeting room is already reserved but not confirmed yet. Please wait for 24 hours for any changes.",
+            "Meeting room is already reserved but not confirmed yet. Please come back later for any changes.",
         })
       } else {
         return res.render("create-room", {
-          error:
-            "Conflicting reservation: Meeting room is already reserved for the specified time",
+          error: "Meeting room is already reserved for the specified time",
         })
       }
     }
@@ -84,11 +83,6 @@ exports.createReservation = async (req, res) => {
 exports.confirmReservation = async (req, res) => {
   try {
     const { reservationId, token } = req.params
-
-    // Validate token and update reservation status
-    // This step is crucial to ensure that the token is valid and belongs to the correct reservation
-    // If the token is valid, update the reservation's confirmed attribute to true
-
     // Example code for updating reservation status:
     const reservation = await Reservation.findById(reservationId)
     if (!reservation) {
