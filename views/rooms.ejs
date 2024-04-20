@@ -19,11 +19,10 @@
         <form action="/reservation/room/<%= room._id %>" method="GET">
           <button type="submit">Reserve</button>
         </form>
-        <a href="/meeting-room/<%= room._id %>/edit">Edit</a>
-        <form
-          action="/meeting-room/<%= room._id %>?_method=DELETE"
-          method="POST"
-        >
+        <form action="/meeting-room/edit/<%= room._id %>" method="GET">
+          <button type="submit">Edit</button>
+        </form>
+        <form action="/meeting-room/<%= room._id %>" method="DELETE">
           <button type="submit">Delete</button>
         </form>
       </li>

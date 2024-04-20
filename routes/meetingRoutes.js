@@ -34,4 +34,12 @@ router.delete(
   meetingController.deleteMeetingRoomById
 )
 
+router.get("/create", (req, res) => {
+  res.render("create-room")
+})
+
+router.get("/edit/:id", (req, res) => {
+  res.render("edit-room", { meetingRoomId: req.params.id })
+})
+
 module.exports = router

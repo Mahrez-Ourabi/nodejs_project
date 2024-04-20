@@ -128,10 +128,27 @@ exports.getAllReservations = async (req, res) => {
     const reservations = await Reservation.find()
       .populate("user")
       .populate("meetingRoom")
-    res.render("all-reservations", { reservations: reservations })
+    res.render("list-reservations", { reservations: reservations })
   } catch (error) {
     console.error(error)
-    res.render("all-reservations", { error: "Failed to fetch reservations" })
+    res.render("list-reservations", { error: "Failed to fetch reservations" })
+  }
+}
+
+exports.cancelReservation = async (req, res) => {
+  try {
+    const reservationId = req.params.reservationId
+    const reservation = await Reservation.findById(reservationId)
+    if (!reservation) {
+      return res.render("confirmation-page", { error: "Reservation not found" })
+    }
+    await reservation.remove()
+    res.render("confirmation-page", {
+      message: "Reservation cancelled successfully",
+    })
+  } catch (error) {
+    console.error(error)
+    res.render("confirmation-page", { error: "Failed to cancel reservation" })
   }
 }
 
@@ -143,14 +160,14 @@ exports.getReservationById = async (req, res) => {
       .populate("user")
       .populate("meetingRoom")
     if (!reservation) {
-      return res.render("reservation-details", {
+      return res.render("reservation", {
         error: "Reservation not found",
       })
     }
-    res.render("reservation-details", { reservation: reservation })
+    res.render("reservation", { reservation: reservation })
   } catch (error) {
     console.error(error)
-    res.render("reservation-details", { error: "Failed to fetch reservation" })
+    res.render("reservation", { error: "Failed to fetch reservation" })
   }
 }
 

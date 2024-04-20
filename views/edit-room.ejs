@@ -9,8 +9,8 @@
     <h1>Edit Meeting Room</h1>
     <% if (typeof error !== 'undefined') { %>
     <p>Error: <%= error %></p>
-    <% } else { %> <% if (meetingRoom) { %>
-    <form action="/meeting-room/<%= meetingRoom._id %>" method="POST">
+    <% } else { %> <% if (typeof meetingRoom !== 'undefined') { %>
+    <form action="/meeting-room/<%= meetingRoom._id %>" method="PUT">
       <label for="name">Name:</label><br />
       <input
         type="text"
@@ -36,6 +36,6 @@
     </form>
     <% } else { %>
     <p>Error: Meeting room not found.</p>
-    <% } %> <% } %>
+    <% }} %>
   </body>
 </html>
