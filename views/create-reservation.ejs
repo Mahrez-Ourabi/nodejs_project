@@ -5,13 +5,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create Reservation</title>
+    <script>
+      const existingToken = localStorage.getItem("token")
+      if (!existingToken) {
+        window.location.href = "/auth/login"
+      }
+    </script>
   </head>
   <body>
     <h1>Create Reservation</h1>
-
     <form action="/reservation" method="POST">
       <label for="meetingRoomId">Meeting Room ID:</label>
       <%= meetingRoomId %><br />
+      <input type="hidden" id="meetingRoomId" name="meetingRoomId" value="" />
       <label for="startTime">Start Time:</label>
       <input
         type="datetime-local"
@@ -27,6 +33,12 @@
     <script>
       const token = localStorage.getItem("token")
       document.getElementById("token").value = token
+      document.getElementById("startTime").value = new Date()
+        .toISOString()
+        .slice(0, 16)
+      document.getElementById("endTime").value = new Date()
+        .toISOString()
+        .slice(0, 16)
     </script>
     <% if (typeof error !== 'undefined') { %>
     <p>Error: <%= error %></p>

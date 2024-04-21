@@ -4,12 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create Meeting Room</title>
+    <script>
+      const existingToken = localStorage.getItem("token")
+      if (!existingToken) {
+        window.location.href = "/auth/login"
+      }
+    </script>
   </head>
   <body>
     <h1>Create Meeting Room</h1>
-    <% if (typeof error !== 'undefined') { %>
-    <p>Error: <%= error %></p>
-    <% } else { %>
     <form action="/meeting-room" method="POST">
       <label for="name">Name:</label><br />
       <input type="text" id="name" name="name" /><br />
@@ -20,7 +23,9 @@
       <input type="hidden" id="token" name="token" value="token" />
       <button type="submit">Create</button>
     </form>
-    <% } %>
+    <% if (typeof error !== 'undefined') { %>
+    <p>Error: <%= error %></p>
+    <% }%>
     <script>
       const token = localStorage.getItem("token")
       document.getElementById("token").value = token

@@ -28,12 +28,12 @@ exports.createReservation = async (req, res) => {
       )
       if (unconfirmedReservation) {
         // Notify the user that the room is reserved but not confirmed yet
-        return res.render("create-room", {
+        return res.render("create-reservation", {
           error:
             "Meeting room is already reserved but not confirmed yet. Please come back later for any changes.",
         })
       } else {
-        return res.render("create-room", {
+        return res.render("create-reservation", {
           error: "Meeting room is already reserved for the specified time",
         })
       }
@@ -68,14 +68,14 @@ exports.createReservation = async (req, res) => {
         }, 10 * 60 * 1000) // 10 minutes in milliseconds
       }
 
-      res.redirect("/meeting-room/all")
+      res.redirect("/meeting-room")
     } catch (error) {
-      console.error("Error creating reservation:", error)
-      res.render("create-room", { error: "Failed to create reservation" })
+      res.render("create-reservation", {
+        error: "Failed to create reservation",
+      })
     }
   } catch (error) {
-    console.error(error)
-    res.render("create-room", { error: "Failed to create reservation" })
+    res.render("create-reservation", { error: "Failed to create reservation" })
   }
 }
 
@@ -202,11 +202,11 @@ exports.deleteReservation = async (req, res) => {
     const reservationId = req.params.reservationId
     const reservation = await Reservation.findByIdAndDelete(reservationId)
     if (!reservation) {
-      return res.render("all-reservations", { error: "Reservation not found" })
+      return res.render("list-reservations", { error: "Reservation not found" })
     }
-    res.redirect("/meeting-room/all")
+    res.redirect("/meeting-room")
   } catch (error) {
     console.error(error)
-    res.render("all-reservations", { error: "Failed to delete reservation" })
+    res.render("list-reservations", { error: "Failed to delete reservation" })
   }
 }
