@@ -24,7 +24,7 @@ exports.createMeetingRoom = async (req, res) => {
 
     const meetingRoom = new MeetingRoom({ name, capacity, equipment })
     await meetingRoom.save()
-    res.redirect("/meeting-room/all")
+    res.redirect("/meeting-room/")
   } catch (error) {
     console.error(error)
     res.render("create-room", { error: "Failed to create meeting room" })
@@ -59,7 +59,7 @@ exports.updateMeetingRoomById = async (req, res) => {
     if (!updatedMeetingRoom) {
       return res.render("edit-room", { error: "Meeting room not found" })
     }
-    res.redirect("/meeting-room/all")
+    res.redirect("/meeting-room")
   } catch (error) {
     console.error(error)
     res.render("edit-room", { error: "Failed to update meeting room" })
@@ -72,11 +72,11 @@ exports.deleteMeetingRoomById = async (req, res) => {
     const { id } = req.params
     const deletedMeetingRoom = await MeetingRoom.findByIdAndDelete(id)
     if (!deletedMeetingRoom) {
-      return res.render("all-rooms", { error: "Meeting room not found" })
+      return res.redirect("/meeting-room")
     }
-    res.redirect("/meeting-room/all")
+    res.redirect("/meeting-room")
   } catch (error) {
     console.error(error)
-    res.render("all-rooms", { error: "Failed to delete meeting room" })
+    res.redirect("/meeting-room")
   }
 }

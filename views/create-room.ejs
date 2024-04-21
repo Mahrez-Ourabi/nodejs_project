@@ -6,6 +6,9 @@
     <title>Create Meeting Room</title>
   </head>
   <body>
+    <script>
+      const token = localStorage.getItem("token")
+    </script>
     <h1>Create Meeting Room</h1>
     <% if (typeof error !== 'undefined') { %>
     <p>Error: <%= error %></p>
@@ -17,6 +20,7 @@
       <input type="text" id="capacity" name="capacity" /><br />
       <label for="equipment">Equipment:</label><br />
       <input type="text" id="equipment" name="equipment" /><br />
+      <input type="hidden" id="token" name="token" value="token" />
       <button type="submit">Create</button>
     </form>
     <% } %>

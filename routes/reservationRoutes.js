@@ -9,7 +9,7 @@ router.get("/", ReservastionController.getAllReservations)
 
 router.get(
   "/user/:id",
-  authenticateUser,
+  // authenticateUser,
   ReservastionController.getUserReservations
 )
 
@@ -17,7 +17,11 @@ router.get(
 router.get("/:id", ReservastionController.getReservationById)
 
 // POST a new reservation
-router.post("/", authenticateUser, ReservastionController.createReservation)
+router.post(
+  "/",
+  //  authenticateUser,
+  ReservastionController.createReservation
+)
 
 // PUT/update a reservation
 router.put("/:id", ReservastionController.updateReservation)
