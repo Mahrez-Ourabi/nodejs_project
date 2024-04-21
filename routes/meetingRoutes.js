@@ -11,7 +11,7 @@ router.get("/", meetingController.getAllMeetingRooms)
 // Route to create a new meeting
 router.post(
   "/",
-  // authenticateUser,
+  authenticateUser,
   // authAdmin,
   meetingController.createMeetingRoom
 )
@@ -19,7 +19,7 @@ router.post(
 // Route to update a meeting by ID
 router.post(
   "/edit/:id",
-  // authenticateUser,
+  authenticateUser,
   // authAdmin,
   meetingController.updateMeetingRoomById
 )
@@ -27,7 +27,7 @@ router.post(
 // Route to delete a meeting by ID
 router.post(
   "/delete/:id",
-  // authenticateUser,
+  authenticateUser,
   // authAdmin,
   meetingController.deleteMeetingRoomById
 )

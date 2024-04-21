@@ -23,6 +23,7 @@
           <button type="submit">Edit</button>
         </form>
         <form action="/meeting-room/delete/<%= room._id %>" method="POST">
+          <input type="hidden" id="token" name="token" value="token" />
           <button type="submit">Delete</button>
         </form>
       </li>
@@ -31,5 +32,9 @@
     <% } else { %>
     <p>No meeting rooms found.</p>
     <% } %>
+    <script>
+      const token = localStorage.getItem("token")
+      document.getElementById("token").value = token
+    </script>
   </body>
 </html>

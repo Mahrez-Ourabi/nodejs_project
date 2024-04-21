@@ -16,8 +16,12 @@ exports.authenticateUser = async (req, res, next) => {
   } catch (error) {
     console.error("Authentication error:", error.message)
     if (error.name === "TokenExpiredError") {
-      return res.status(401).json({ error: "Unauthorized: Token expired" })
+      return res.render("not-authorized", {
+        error: "Unauthorized: Token expired",
+      })
     }
-    return res.status(401).json({ error: "Unauthorized: Invalid JWT token" })
+    return res.render("not-authorized", {
+      error: "Unauthorized: Invalid JWT token",
+    })
   }
 }

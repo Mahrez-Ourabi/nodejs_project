@@ -8,6 +8,7 @@
   </head>
   <body>
     <h1>Create Reservation</h1>
+
     <form action="/reservation" method="POST">
       <label for="meetingRoomId">Meeting Room ID:</label>
       <%= meetingRoomId %><br />
@@ -20,8 +21,13 @@
       /><br />
       <label for="endTime">End Time:</label>
       <input type="datetime-local" id="endTime" name="endTime" required /><br />
+      <input type="hidden" id="token" name="token" value="" />
       <button type="submit">Create Reservation</button>
     </form>
+    <script>
+      const token = localStorage.getItem("token")
+      document.getElementById("token").value = token
+    </script>
     <% if (typeof error !== 'undefined') { %>
     <p>Error: <%= error %></p>
     <% } %>

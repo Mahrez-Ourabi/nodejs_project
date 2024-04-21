@@ -36,7 +36,12 @@
         value="<%= reservation.endTime %>"
         required
       /><br />
+      <input type="hidden" id="token" name="token" value="token" />
       <button type="submit">Update Reservation</button>
     </form>
+    <script>
+      const token = localStorage.getItem("token")
+      document.getElementById("token").value = token
+    </script>
   </body>
 </html>

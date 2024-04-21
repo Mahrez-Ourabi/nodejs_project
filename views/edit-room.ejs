@@ -32,10 +32,15 @@
         name="equipment"
         value="<%= meetingRoom.equipment %>"
       /><br />
+      <input type="hidden" id="token" name="token" value="token" />
       <button type="submit">Update</button>
     </form>
     <% } else { %>
     <p>Error: Meeting room not found.</p>
     <% }} %>
+    <script>
+      const token = localStorage.getItem("token")
+      document.getElementById("token").value = token
+    </script>
   </body>
 </html>
