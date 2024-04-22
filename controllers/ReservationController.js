@@ -7,8 +7,9 @@ const User = require("../models/user")
 // Function to create a reservation
 exports.createReservation = async (req, res) => {
   try {
-    const { meetingRoomId, startTime, endTime } = req.body
+    let { meetingRoomId, startTime, endTime } = req.body
     const userId = req.userId
+    console.log(new Date(startTime).toTimeString())
 
     // Check if the meeting room is available for the specified time
     const conflicts = await Reservation.find({
@@ -155,10 +156,9 @@ exports.cancelReservation = async (req, res) => {
 // Function to get a single reservation by ID
 exports.getReservationById = async (req, res) => {
   try {
-    const reservationId = req.params.reservationId
+    const reservationId = req.params.id
+    console.log(reservationId)
     const reservation = await Reservation.findById(reservationId)
-      .populate("user")
-      .populate("meetingRoom")
     if (!reservation) {
       return res.render("reservation", {
         error: "Reservation not found",

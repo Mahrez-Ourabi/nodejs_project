@@ -14,10 +14,7 @@
   </head>
   <body>
     <h1>Edit Reservation</h1>
-    <form
-      action="/reservations/<%= reservation._id %>?_method=PUT"
-      method="POST"
-    >
+    <form action="/reservation/edit/<%= reservation._id %>" method="POST">
       <label for="meetingRoomId">Meeting Room ID:</label>
       <input
         type="text"

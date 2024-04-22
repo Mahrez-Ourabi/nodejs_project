@@ -13,18 +13,19 @@ router.get(
   ReservastionController.getUserReservations
 )
 
-// GET a specific reservation
-router.get("/:id", ReservastionController.getReservationById)
-
 // POST a new reservation
 router.post("/", authenticateUser, ReservastionController.createReservation)
 
 // PUT/update a reservation
-router.put("/:id", authenticateUser, ReservastionController.updateReservation)
+router.post(
+  "/edit/:id",
+  authenticateUser,
+  ReservastionController.updateReservation
+)
 
 // DELETE a reservation
-router.delete(
-  "/:id",
+router.post(
+  "/delete/:id",
   authenticateUser,
   ReservastionController.deleteReservation
 )
@@ -42,5 +43,8 @@ router.get(
 router.get("/room/:id", (req, res) => {
   res.render("create-reservation", { meetingRoomId: req.params.id })
 })
+
+// GET a specific reservation
+router.get("/:id", ReservastionController.getReservationById)
 
 module.exports = router
